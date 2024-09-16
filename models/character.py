@@ -2,16 +2,19 @@ import pygame
 from utils.asset_loader import load_character_images
 
 class Character:
-    def __init__(self):
-        self.x = 640
-        self.y = 360
+    def __init__(self, onlyScreen=False, x=640, y=360):
+        self.x = x
+        self.y = y
+        self.onlyScreen = onlyScreen # Para saber si el personaje solo se podra mover dentro de la pantalla
         self.image_index = 0
-        self.long = 15 # distancia que avanzara 
+        self.long = 0 # distancia que avanzara 
         self.direction = 1  # 1: right, 0: left
         self.images = load_character_images()
         self.is_moving = False  # Para saber si el personaje se está moviendo
 
     def move_right(self):
+        if self.onlyScreen and self.x > 1280 - 60:
+            return
         self.x += self.long
         # Alterna entre las imágenes 1 y 2 cuando el personaje camina a la derecha
         if self.image_index < 1 or self.image_index > 2: # si la imagen actual no es 1 o 2
@@ -22,6 +25,8 @@ class Character:
         self.is_moving = True
 
     def move_left(self):
+        if self.onlyScreen and self.x < 10:
+            return
         self.x -= self.long
         # Alterna entre las imágenes 4 y 5 cuando el personaje camina a la izquierda
         if self.image_index < 4 or self.image_index > 5:
@@ -35,8 +40,11 @@ class Character:
         self.is_moving = False  # Reiniciar el estado de movimiento
         if keys[pygame.K_RIGHT]:
             self.move_right()
+            return 10
         elif keys[pygame.K_LEFT]:
-            self.move_left()
+            self.move_left()        
+            return -10
+        return False
 
     def draw(self, screen):
         # Si el personaje no se mueve, se asegura de mostrar la imagen estática según la dirección

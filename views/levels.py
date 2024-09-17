@@ -31,7 +31,9 @@ class Levels:
                     pygame.quit()
                     return
 
+
             move_character = self.character.handle_input(keys)
+            self.character.update()
             if move_character != False:
                 move_background(self.screen, self.background, self.backgroundPos, move_character)
             else:
@@ -40,5 +42,5 @@ class Levels:
             # * Dibujamos el personaje
             self.character.draw(self.screen)
 
-            self.clock.tick(60)
+            self.clock.tick(30)
             pygame.display.flip()
